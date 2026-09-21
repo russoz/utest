@@ -29,6 +29,17 @@ export function run(options) {
 		die("No test files found for provided bundles.\n");
 	}
 
+	// find_real_module()/generate_standard_shim() resolve modules against THIS
+	// process's REQUIRE_SEARCH_PATH, but lib_paths only ever reached the workers
+	// (build_l_flags). Without this, a mocked module living outside ucode's
+	// default path is invisible to the shim generator: no shim is created and
+	// the mock silently has no effect. Appended, not unshifted, so user paths
+	// never shadow framework modules — the same ordering build_l_flags() uses.
+	for (let p in (options.lib_paths || [])) {
+		push(REQUIRE_SEARCH_PATH, p + "/*.uc");
+		push(REQUIRE_SEARCH_PATH, p + "/*.so");
+	}
+
 	// Set up shims for modules listed in config.mocks.
 	options = MockManager.setup(options);
 

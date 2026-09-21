@@ -36,10 +36,17 @@ function proxy_path(raw) {
 	return null;
 }
 
-function generate_standard_shim(name, shim_dir) {
+function generate_standard_shim(name, shim_dir, api) {
 	let real;
 	try { real = require(name); } catch(e) { real = null; }
-	if (!real) {
+	// require() loads in program mode, where `export` is a syntax error, so a
+	// pure-ucode ES module can never be introspected this way — only C (.so)
+	// modules and program-mode .uc files can. Fall back to the proxy's declared
+	// api list for the export names: the generated shim itself is a module, so
+	// its `import * as _real from 'real_<name>'` still resolves and pass-through
+	// keeps working.
+	let members = real ? keys(real) : (api || []);
+	if (!real && !length(members)) {
 		warn(sprintf("[utest] warning: could not inspect '%s'; the shim will have no interceptable functions\n", name));
 	}
 	// The module name is interpolated into the generated source, so emit it as a
@@ -50,7 +57,7 @@ function generate_standard_shim(name, shim_dir) {
 		sprintf("import * as _real from %J;", "real_" + name),
 		"import { __internal__ } from 'utest.mock.engine';"
 	];
-	for (let fn_name in (real ? keys(real) : [])) {
+	for (let fn_name in members) {
 		// Each name becomes `export const <fn_name>` in the generated source, so a
 		// name that isn't a valid identifier (a reserved word, or an exotic native
 		// export) would make the whole shim fail to compile — taking every other
@@ -60,7 +67,7 @@ function generate_standard_shim(name, shim_dir) {
 			warn(sprintf("[utest] warning: '%s' export '%s' is not a valid identifier; omitted from the shim\n", name, fn_name));
 			continue;
 		}
-		if (type(real[fn_name]) === 'function') {
+		if (!real || type(real[fn_name]) === 'function') {
 			push(lines, sprintf(
 				"export const %s = function(...args) { let p = __internal__.get_proxy_global(%J); return p ? p.%s(...args) : _real.%s(...args); };",
 				fn_name, name, fn_name, fn_name
@@ -77,14 +84,18 @@ function generate_standard_shim(name, shim_dir) {
 // Install a shim for one module.
 // If the real module is absent but the built-in proxy declares an `api` list,
 // a stub shim is generated from that list so the module can still be mocked.
+function proxy_api(name) {
+	try {
+		let proxy = require('utest.mock.proxy.' + name);
+		if (proxy && type(proxy.api) === 'array') return proxy.api;
+	} catch(e) {}
+	return null;
+}
+
 function setup_shim(name, shim_dir) {
+	let api = proxy_api(name);
 	let real_path = find_real_module(name);
 	if (!real_path) {
-		let api = null;
-		try {
-			let proxy = require('utest.mock.proxy.' + name);
-			if (proxy && type(proxy.api) === 'array') api = proxy.api;
-		} catch(e) {}
 		if (api) {
 			let lines = ["import { __internal__ } from 'utest.mock.engine';"];
 			for (let fn_name in api) {
@@ -101,7 +112,7 @@ function setup_shim(name, shim_dir) {
 		}
 		return;
 	}
-	generate_standard_shim(name, shim_dir);
+	generate_standard_shim(name, shim_dir, api);
 	let ext_m = match(real_path, /\.[^.]+$/);
 	let ext = ext_m ? ext_m[0] : '';
 	// The shim imports 'real_<name>'; require resolves that with dots→'/', so the
@@ -125,22 +136,26 @@ export const setup = function(config) {
 	if (!mkdir_p(proxy_subdir))
 		die("[utest] error: could not create proxy directory: " + proxy_subdir);
 
+	// Every proxy must be linked, and the proxy dir on the search path, BEFORE any
+	// shim is generated: setup_shim() reads the proxy's `api` list via
+	// require('utest.mock.proxy.<name>'), which could never resolve a user proxy
+	// while the directory was only added to the search path after this loop.
 	for (let name in keys(config.mocks || {})) {
 		let ppath = proxy_path(config.mocks[name]);
-
-		// Install user proxy: symlinked so require('utest.mock.proxy.<name>') finds it.
-		if (ppath) {
-			let abs = fs.realpath(ppath) || ppath;
-			let proxy_link = proxy_subdir + "/" + module_path(name) + ".uc";
-			ensure_parent(proxy_link);
-			if (!fs.symlink(abs, proxy_link))
-				die(sprintf("[utest] error: could not install proxy for '%s': symlink '%s' -> '%s' failed\n", name, abs, proxy_link));
-		}
-
-		setup_shim(name, shim_dir);
+		if (!ppath) continue;
+		let abs = fs.realpath(ppath) || ppath;
+		let proxy_link = proxy_subdir + "/" + module_path(name) + ".uc";
+		ensure_parent(proxy_link);
+		if (!fs.symlink(abs, proxy_link))
+			die(sprintf("[utest] error: could not install proxy for '%s': symlink '%s' -> '%s' failed\n", name, abs, proxy_link));
 	}
 
 	// proxy dir is prepended so user proxies shadow built-ins when both exist.
 	const proxy_dir = config.run_dir + "/proxy";
+	unshift(REQUIRE_SEARCH_PATH, proxy_dir + "/*.uc");
+
+	for (let name in keys(config.mocks || {}))
+		setup_shim(name, shim_dir);
+
 	return { ...config, shim_paths: [proxy_dir, shim_dir] };
 };
