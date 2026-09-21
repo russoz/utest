@@ -1,7 +1,9 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ucode-utest
-PKG_VERSION:=1.5.0
+# Fallback only. scripts/build-package.sh derives the version from the git tag;
+# this value is used just when no git history is available (e.g. a tarball build).
+PKG_VERSION:=1.5.1
 PKG_RELEASE:=1
 
 PKG_MAINTAINER:=António Mora <oliveira.fh42@gmail.com>

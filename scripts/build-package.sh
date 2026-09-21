@@ -9,8 +9,32 @@ GIT_COMMIT=${GIT_COMMIT:-$(git -C "$ROOT" rev-parse --short=8 HEAD 2>/dev/null |
 
 PKG_MAKEFILE="$ROOT/openwrt/ucode-utest/Makefile"
 PKG_NAME=$(grep '^PKG_NAME:=' "$PKG_MAKEFILE" | sed 's/^PKG_NAME:=//')
-PKG_VERSION=$(grep '^PKG_VERSION:=' "$PKG_MAKEFILE" | sed 's/^PKG_VERSION:=//')
 PKG_SDK_DIR=/builder/package/$PKG_NAME
+
+# Derive the version from the tag rather than the Makefile. Hand-maintaining
+# PKG_VERSION meant it silently went stale: every release from v1.2.0 to v1.5.1
+# shipped assets named ucode-utest-1.2.0~<sha>. The Makefile value survives only
+# as a last-resort fallback (no git, no tags — e.g. building from a tarball).
+#
+#   1. PKG_VERSION in the environment  — explicit override wins
+#   2. GITHUB_REF_NAME on a tag build  — CI checkout may be shallow, so ask CI
+#                                        before asking git
+#   3. the tag at HEAD                 — local release build
+#   4. the most recent tag             — local dev build between releases
+#   5. the Makefile                    — no git history available
+strip_v() { echo "${1#v}"; }
+if [ -n "${PKG_VERSION:-}" ]; then
+    :
+elif [ "${GITHUB_REF_TYPE:-}" = "tag" ] && [ -n "${GITHUB_REF_NAME:-}" ]; then
+    PKG_VERSION=$(strip_v "$GITHUB_REF_NAME")
+elif TAG=$(git -C "$ROOT" describe --tags --exact-match HEAD 2>/dev/null); then
+    PKG_VERSION=$(strip_v "$TAG")
+elif TAG=$(git -C "$ROOT" describe --tags --abbrev=0 2>/dev/null); then
+    PKG_VERSION=$(strip_v "$TAG")
+else
+    PKG_VERSION=$(grep '^PKG_VERSION:=' "$PKG_MAKEFILE" | sed 's/^PKG_VERSION:=//')
+fi
+echo "build-package: PKG_VERSION=$PKG_VERSION (commit $GIT_COMMIT)"
 
 TMPDIR=$(mktemp -d)
 trap "rm -rf $TMPDIR" EXIT
