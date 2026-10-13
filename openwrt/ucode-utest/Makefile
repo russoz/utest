@@ -16,7 +16,7 @@ define Package/ucode-utest
   SECTION:=devel
   CATEGORY:=Development
   TITLE:=Unit testing framework for ucode
-  URL:=https://github.com/m00qek/utest
+  URL:=https://github.com/ucode-lang/utest
   DEPENDS:=+ucode
   PKGARCH:=all
 endef

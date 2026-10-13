@@ -1,6 +1,6 @@
 # utest
 
-A modern, non-invasive testing framework for [ucode](https://github.com/jow-/ucode), OpenWrt's scripting language.
+A modern, non-invasive testing framework for [ucode](https://ucode-lang.org/), OpenWrt's scripting language.
 
 ```js
 import { describe, it, assert } from 'utest';
@@ -42,14 +42,14 @@ apk add ucode-utest
 
 ## Documentation
 
-**[m00qek.github.io/utest](https://m00qek.github.io/utest/)**
+**[ucode-lang.org/utest](https://ucode-lang.org/utest/)**
 
 | | |
 | :--- | :--- |
-| [Tutorials](https://m00qek.github.io/utest/tutorials/) | Start here — write your first test, mock, and assertion |
-| [How-to Guides](https://m00qek.github.io/utest/how-to/) | Recipes for mocking, CI, filtering, custom proxies, and more |
-| [Reference](https://m00qek.github.io/utest/reference/) | CLI flags, DSL, assertion and mock API |
-| [Explanation](https://m00qek.github.io/utest/explanation/) | Design decisions and architecture |
+| [Tutorials](https://ucode-lang.org/utest/tutorials/) | Start here — write your first test, mock, and assertion |
+| [How-to Guides](https://ucode-lang.org/utest/how-to/) | Recipes for mocking, CI, filtering, custom proxies, and more |
+| [Reference](https://ucode-lang.org/utest/reference/) | CLI flags, DSL, assertion and mock API |
+| [Explanation](https://ucode-lang.org/utest/explanation/) | Design decisions and architecture |
 
 ---
 

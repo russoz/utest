@@ -1,6 +1,8 @@
 site_name: utest
 site_description: A modern, non-invasive testing framework for the ucode ecosystem.
-site_url: https://m00qek.github.io/utest/
+site_url: https://ucode-lang.org/utest/
+repo_url: https://github.com/ucode-lang/utest
+repo_name: ucode-lang/utest
 site_dir: bin/site
 
 theme:

@@ -1,6 +1,6 @@
 # utest
 
-utest is a modern, non-invasive testing framework for [ucode](https://github.com/jow-/ucode), OpenWrt's scripting language.
+utest is a modern, non-invasive testing framework for [ucode](https://ucode-lang.org/), OpenWrt's scripting language.
 
 ---
 
@@ -46,5 +46,5 @@ utest is a modern, non-invasive testing framework for [ucode](https://github.com
 
 ## Quick links
 
-- [Source code on GitHub](https://github.com/m00qek/utest)
-- [Report an issue](https://github.com/m00qek/utest/issues)
+- [Source code on GitHub](https://github.com/ucode-lang/utest)
+- [Report an issue](https://github.com/ucode-lang/utest/issues)

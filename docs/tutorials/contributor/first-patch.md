@@ -20,7 +20,7 @@ A new combinator factory, `not_null()`, that passes when the actual value is not
 ## Step 1 — Clone the repository
 
 ```bash
-git clone https://github.com/m00qek/utest.git
+git clone https://github.com/ucode-lang/utest.git
 cd utest
 ```
 
