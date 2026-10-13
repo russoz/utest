@@ -5,8 +5,10 @@ on:
     branches: [main]
     paths:
       - "**/*.md"
+      - "docs/**"
       - "mkdocs.yml"
       - ".github/workflows/docs.yml"
+  workflow_dispatch:
 
 permissions:
   contents: read
