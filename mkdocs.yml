@@ -7,18 +7,22 @@ site_dir: bin/site
 
 theme:
   name: material
+  logo: assets/logo.svg
+  favicon: assets/logo.svg
+  # Match ucode-lang.org: system font stacks, no web fonts.
+  font: false
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: indigo
-      accent: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: indigo
-      accent: indigo
+      primary: custom
+      accent: custom
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
@@ -30,6 +34,20 @@ theme:
     - search.suggest
     - search.highlight
     - content.code.copy
+
+extra_css:
+  - stylesheets/ucode.css
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/ucode-lang/utest
+      name: utest on GitHub
+    - icon: material/web
+      link: https://ucode-lang.org/
+      name: ucode-lang.org
+
+copyright: utest is released under the MIT license and is part of the <a href="https://ucode-lang.org/">ucode</a> project.
 
 markdown_extensions:
   - attr_list

@@ -1,0 +1,246 @@
+/*
+ * Align Material for MkDocs with the ucode-lang.org look: flat header,
+ * system font stacks, teal accent, bordered code blocks and cards.
+ * Palette values are copied from https://ucode-lang.org/.
+ */
+
+:root {
+  --md-text-font: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --md-code-font: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono";
+}
+
+[data-md-color-scheme="default"] {
+  --u-bg: #fbfbfa;
+  --u-ink: #1c2128;
+  --u-muted: #5a6470;
+  --u-line: #e2e5e9;
+  --u-panel: #f4f5f6;
+  --u-code-bg: #f6f8fa;
+  --u-accent: #0b6e99;
+  --u-accent-soft: rgba(11, 110, 153, 0.09);
+  --u-str: #14713d;
+}
+
+[data-md-color-scheme="slate"] {
+  --u-bg: #0c1117;
+  --u-ink: #d3dae2;
+  --u-muted: #8b95a1;
+  --u-line: #232c36;
+  --u-panel: #121820;
+  --u-code-bg: #10161d;
+  --u-accent: #58b6d0;
+  --u-accent-soft: rgba(88, 182, 208, 0.12);
+  --u-str: #56b470;
+}
+
+[data-md-color-scheme="default"],
+[data-md-color-scheme="slate"] {
+  --md-primary-fg-color: var(--u-accent);
+  --md-primary-fg-color--light: var(--u-accent);
+  --md-primary-fg-color--dark: var(--u-accent);
+  --md-accent-fg-color: var(--u-accent);
+  --md-accent-fg-color--transparent: var(--u-accent-soft);
+
+  --md-default-bg-color: var(--u-bg);
+  --md-default-fg-color: var(--u-ink);
+  --md-default-fg-color--light: var(--u-muted);
+  --md-default-fg-color--lighter: var(--u-muted);
+  --md-default-fg-color--lightest: var(--u-line);
+
+  --md-typeset-color: var(--u-ink);
+  --md-typeset-a-color: var(--u-accent);
+
+  --md-code-bg-color: var(--u-code-bg);
+  --md-code-fg-color: var(--u-ink);
+  --md-code-hl-color: var(--u-accent-soft);
+  --md-code-hl-keyword-color: var(--u-accent);
+  --md-code-hl-string-color: var(--u-str);
+  --md-code-hl-comment-color: var(--u-muted);
+  --md-code-hl-number-color: var(--u-ink);
+  --md-code-hl-constant-color: var(--u-accent);
+  --md-code-hl-function-color: var(--u-ink);
+  --md-code-hl-name-color: var(--u-ink);
+  --md-code-hl-operator-color: var(--u-muted);
+  --md-code-hl-punctuation-color: var(--u-muted);
+  --md-code-hl-special-color: var(--u-str);
+  --md-code-hl-variable-color: var(--u-ink);
+  --md-code-hl-generic-color: var(--u-muted);
+
+  --md-footer-bg-color: var(--u-bg);
+  --md-footer-bg-color--dark: var(--u-bg);
+  --md-footer-fg-color: var(--u-ink);
+  --md-footer-fg-color--light: var(--u-muted);
+  --md-footer-fg-color--lighter: var(--u-muted);
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- header and tabs: flat, on the page background ---------- */
+
+.md-header,
+.md-tabs {
+  --md-primary-bg-color: var(--u-ink);
+  --md-primary-bg-color--light: var(--u-muted);
+  background-color: var(--u-bg);
+  color: var(--u-ink);
+}
+
+.md-header,
+.md-header--shadow {
+  box-shadow: none;
+  border-bottom: 1px solid var(--u-line);
+}
+
+.md-header__topic:first-child {
+  font-family: var(--md-code-font-family);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+.md-tabs {
+  border-bottom: 1px solid var(--u-line);
+}
+
+.md-tabs__link {
+  opacity: 1;
+  color: var(--u-muted);
+  font-weight: 550;
+}
+
+.md-tabs__link:hover {
+  color: var(--u-ink);
+}
+
+.md-tabs__item--active .md-tabs__link {
+  color: var(--u-accent);
+}
+
+.md-source {
+  color: var(--u-muted);
+}
+
+.md-source:hover {
+  color: var(--u-ink);
+  opacity: 1;
+}
+
+@media screen and (min-width: 60em) {
+  .md-search__input {
+    background-color: var(--u-panel);
+    border: 1px solid var(--u-line);
+    border-radius: 8px;
+  }
+
+  .md-search__input:hover {
+    background-color: var(--u-panel);
+    border-color: var(--u-accent);
+  }
+
+  .md-search__input + .md-search__icon,
+  .md-search__input::placeholder {
+    color: var(--u-muted);
+  }
+}
+
+/* ---------- navigation ---------- */
+
+.md-nav__link--active,
+.md-nav__item .md-nav__link--active {
+  color: var(--u-accent);
+}
+
+/* ---------- typography ---------- */
+
+.md-typeset h1 {
+  color: var(--u-ink);
+  font-weight: 750;
+  letter-spacing: -0.022em;
+}
+
+.md-typeset h2 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.md-typeset h3 {
+  font-weight: 650;
+}
+
+.md-typeset hr {
+  border-bottom-color: var(--u-line);
+}
+
+/* ---------- code ---------- */
+
+.md-typeset :not(pre) > code {
+  background-color: var(--u-panel);
+  border: 1px solid var(--u-line);
+  border-radius: 4px;
+}
+
+.md-typeset pre {
+  border: 1px solid var(--u-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.md-typeset pre > code {
+  border-radius: 0;
+}
+
+.md-typeset .highlight :is(.k, .kc, .kd, .kn, .kp, .kr, .kt) {
+  font-weight: 600;
+}
+
+.md-typeset .highlight :is(.c, .c1, .cm, .ch, .cs) {
+  font-style: italic;
+}
+
+.md-typeset .tabbed-set > .tabbed-content pre {
+  border-radius: 10px;
+}
+
+/* ---------- cards, tables, admonitions ---------- */
+
+.md-typeset .grid.cards > ul > li,
+.md-typeset .grid > .card {
+  border: 1px solid var(--u-line);
+  border-radius: 12px;
+  background-color: var(--u-panel);
+}
+
+.md-typeset .grid.cards > ul > li:hover,
+.md-typeset .grid > .card:hover {
+  border-color: var(--u-accent);
+  box-shadow: none;
+}
+
+.md-typeset table:not([class]) {
+  border: 1px solid var(--u-line);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: var(--u-panel);
+}
+
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 10px;
+  box-shadow: none;
+}
+
+/* ---------- footer ---------- */
+
+.md-footer,
+.md-footer-meta {
+  border-top: 1px solid var(--u-line);
+}
+
+.md-footer-meta,
+.md-copyright {
+  color: var(--u-muted);
+}
